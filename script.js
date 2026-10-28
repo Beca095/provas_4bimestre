@@ -239,6 +239,133 @@ function atualizarBotoesFiltro() {
   });
 }
 
+const formAnotacao = document.getElementById("formAnotacao");
+const tituloAnotacao = document.getElementById("tituloAnotacao");
+const textoAnotacao = document.getElementById("textoAnotacao");
+const listaAnotacoes = document.getElementById("listaAnotacoes");
+const mensagemAnotacoes = document.getElementById("mensagemAnotacoes");
+
+// Carrega as anotações salvas
+let anotacoes = JSON.parse(localStorage.getItem("minhasAnotacoes")) || [];
+
+// Salva a lista completa no navegador
+function salvarAnotacoes() {
+  localStorage.setItem("minhasAnotacoes", JSON.stringify(anotacoes));
+}
+
+// Mostra todas as anotações
+function mostrarAnotacoes() {
+  listaAnotacoes.replaceChildren();
+
+  mensagemAnotacoes.classList.toggle("d-none", anotacoes.length > 0);
+
+  anotacoes.forEach(function (anotacao) {
+    const coluna = document.createElement("div");
+    coluna.className = "col-12 col-md-6 col-lg-4";
+
+    const cartao = document.createElement("div");
+    cartao.className = "card h-100 border-0 shadow-sm";
+    cartao.style.backgroundColor = "#F5F0D5";
+
+    const corpo = document.createElement("div");
+    corpo.className = "card-body d-flex flex-column";
+
+    const titulo = document.createElement("h3");
+    titulo.className = "h6";
+    titulo.textContent = anotacao.titulo;
+    titulo.style.color = "#172554";
+
+    const texto = document.createElement("p");
+    texto.className = "mb-3";
+    texto.style.whiteSpace = "pre-wrap";
+    texto.textContent = anotacao.texto;
+
+    const data = document.createElement("small");
+    data.className = "text-secondary mb-3";
+    data.textContent = anotacao.data;
+
+    const botoes = document.createElement("div");
+    botoes.className = "d-flex gap-2 mt-auto";
+
+    const botaoEditar = document.createElement("button");
+    botaoEditar.type = "button";
+    botaoEditar.className = "btn btn-sm btn-outline-dark";
+    botaoEditar.textContent = "Editar";
+
+    botaoEditar.addEventListener("click", function () {
+      const novoTitulo = prompt("Edite o título:", anotacao.titulo);
+
+      if (novoTitulo === null) return;
+
+      const novoTexto = prompt("Edite o conteúdo:", anotacao.texto);
+
+      if (novoTexto === null) return;
+
+      if (novoTitulo.trim() === "" || novoTexto.trim() === "") {
+        alert("O título e o conteúdo não podem ficar vazios.");
+        return;
+      }
+
+      anotacao.titulo = novoTitulo.trim();
+      anotacao.texto = novoTexto.trim();
+
+      salvarAnotacoes();
+      mostrarAnotacoes();
+    });
+
+    const botaoExcluir = document.createElement("button");
+    botaoExcluir.type = "button";
+    botaoExcluir.className = "btn btn-sm btn-outline-danger";
+    botaoExcluir.textContent = "Excluir";
+
+    botaoExcluir.addEventListener("click", function () {
+      const confirmar = confirm("Deseja excluir esta anotação?");
+
+      if (!confirmar) return;
+
+      anotacoes = anotacoes.filter(function (item) {
+        return item.id !== anotacao.id;
+      });
+
+      salvarAnotacoes();
+      mostrarAnotacoes();
+    });
+
+    botoes.append(botaoEditar, botaoExcluir);
+    corpo.append(titulo, texto, data, botoes);
+    cartao.appendChild(corpo);
+    coluna.appendChild(cartao);
+
+    listaAnotacoes.appendChild(coluna);
+  });
+}
+
+// Cria uma nova anotação sem apagar as anteriores
+formAnotacao.addEventListener("submit", function (evento) {
+  evento.preventDefault();
+
+  const novaAnotacao = {
+    id: Date.now(),
+    titulo: tituloAnotacao.value.trim(),
+    texto: textoAnotacao.value.trim(),
+    data: new Date().toLocaleDateString("pt-BR"),
+  };
+
+  if (novaAnotacao.titulo === "" || novaAnotacao.texto === "") {
+    return;
+  }
+
+  anotacoes.push(novaAnotacao);
+
+  salvarAnotacoes();
+  mostrarAnotacoes();
+
+  formAnotacao.reset();
+});
+
+// Exibe as anotações que já estavam salvas
+mostrarAnotacoes();
+
 // Inicia o organizador com as tarefas salvas
 atualizarContadores();
 atualizarBotoesFiltro();

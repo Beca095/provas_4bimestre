@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Minhas Notas</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <script src="notas.js" defer></script>
+  </head>
+
+  <body style="background-color: #f4f6fa">
+    <!-- Cabeçalho -->
+    <header class="text-white py-4" style="background-color: #172554">
+      <div class="container">
+        <p
+          class="text-uppercase small mb-2"
+          style="color: #b8c7e0; letter-spacing: 3px"
+        >
+          ORGANIZE • PLANEJE • CONQUISTE
+        </p>
+        <h1 class="h2 fw-bold mb-2">Minhas Notas</h1>
+
+        <p class="mb-0" style="color: #e0e7f2">
+          Acompanhe suas notas e seu desempenho escolar.
+        </p>
+      </div>
+    </header>
+
+    <!-- Barra de navegação -->
+    <nav
+      class="navbar navbar-expand-lg navbar-dark"
+      style="background-color: #233766"
+    >
+      <div class="container">
+        <a class="navbar-brand fw-bold" href="index.html">
+          Organizador de Estudos
+        </a>
+
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#menuNavegacao"
+          aria-controls="menuNavegacao"
+          aria-expanded="false"
+          aria-label="Abrir menu"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="menuNavegacao">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">Início</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link active" href="notas.html" aria-current="page">
+                Minhas notas
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main class="container py-4">
+      <!-- Introdução -->
+      <section class="mb-4">
+        <h2 class="h4">Boletim escolar</h2>
+
+        <p class="text-secondary mb-0">
+          Registre suas notas e acompanhe sua média por matéria.
+        </p>
+      </section>
+
+      <!-- Formulário para adicionar notas -->
+      <section class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-4">
+          <h2 class="h5 mb-3">Adicionar nota</h2>
+
+          <form id="formNota" class="row g-3">
+            <div class="col-12 col-md-5">
+              <label for="materiaNota" class="form-label"> Matéria </label>
+
+              <select id="materiaNota" class="form-select" required>
+                <option value="">Selecione uma matéria</option>
+                <option>Matemática</option>
+                <option>Literatura</option>
+                <option>História</option>
+                <option>Geografia</option>
+                <option>Biologia</option>
+                <option>Química</option>
+                <option>Física</option>
+                <option>Inglês</option>
+                <option>Lógica de Programação</option>
+                <option>Religião</option>
+                <option>Design e mídias digitais</option>
+                <option>Instalação e manutenção de hardware</option>
+                <option>Introdução e desenvolvimento web</option>
+                <option>Introdução de robótica</option>
+                <option>Redação</option>
+                <option>Gramática</option>
+                <option>Artes</option>
+                <option>High school</option>
+                <option>Outra</option>
+              </select>
+            </div>
+
+            <div class="col-12 col-md-3">
+              <label for="valorNota" class="form-label"> Nota (0 a 10) </label>
+
+              <input
+                type="number"
+                id="valorNota"
+                class="form-control"
+                min="0"
+                max="10"
+                step="0.1"
+                placeholder="Ex.: 9.5"
+                required
+              />
+            </div>
+
+            <div class="col-12 col-md-4">
+              <label for="bimestreNota" class="form-label"> Bimestre </label>
+
+              <select id="bimestreNota" class="form-select" required>
+                <option value="">Selecione o bimestre</option>
+                <option value="1">1º bimestre</option>
+                <option value="2">2º bimestre</option>
+                <option value="3">3º bimestre</option>
+                <option value="4">4º bimestre</option>
+              </select>
+            </div>
+
+            <div class="col-12">
+              <button
+                type="submit"
+                class="btn text-white"
+                style="background-color: #172554"
+              >
+                + Adicionar nota
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- Resumo das notas -->
+      <section class="row g-3 mb-4">
+        <div class="col-12 col-md-6">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+              <p class="text-secondary mb-1">Notas cadastradas</p>
+              <h3 id="totalNotas" class="mb-0" style="color: #172554">0</h3>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-6">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+              <p class="text-secondary mb-1">Média geral das notas</p>
+              <h3 id="mediaGeral" class="mb-0" style="color: #172554">—</h3>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tabela de notas -->
+      <section class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+          <h2 class="h5 mb-3">Tabela de notas</h2>
+
+          <div class="table-responsive">
+            <table class="table table-hover align-middle">
+              <thead class="table-light">
+                <tr>
+                  <th>Matéria</th>
+                  <th>Nota</th>
+                  <th>Bimestre</th>
+                  <th>Ação</th>
+                </tr>
+              </thead>
+
+              <tbody id="listaNotas"></tbody>
+            </table>
+          </div>
+
+          <p id="mensagemVazia" class="text-secondary text-center py-3 mb-0">
+            Nenhuma nota cadastrada ainda.
+          </p>
+
+          <hr class="my-4" />
+
+          <!-- Média por matéria -->
+          <h2 class="h5 mb-3">Média por matéria</h2>
+
+          <div class="table-responsive">
+            <table class="table table-hover align-middle">
+              <thead class="table-light">
+                <tr>
+                  <th>Matéria</th>
+                  <th>Notas registradas</th>
+                  <th>Média</th>
+                  <th>Situação</th>
+                </tr>
+              </thead>
+
+              <tbody id="listaMedias"></tbody>
+            </table>
+          </div>
+
+          <p id="mensagemMedias" class="text-secondary mb-0">
+            As médias aparecerão quando você cadastrar notas.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="bg-white border-top py-3 mt-4">
+      <div class="container text-center">
+        <p class="text-secondary small mb-0">Organizador de Estudos</p>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
