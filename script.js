@@ -1,3 +1,8 @@
+
+// ==========================================
+// ORGANIZADOR DE TAREFAS
+// ==========================================
+
 const formulario = document.getElementById("formTarefa");
 const campoMateria = document.getElementById("materia");
 const campoDescricao = document.getElementById("descricao");
@@ -13,66 +18,80 @@ const tarefasConcluidas = document.getElementById("tarefasConcluidas");
 
 const botoesFiltro = document.querySelectorAll(".filtro");
 
-// Carrega as tarefas salvas no navegador
+// Recupera as tarefas salvas
 let tarefas = JSON.parse(localStorage.getItem("tarefas")) || [];
 let filtroAtual = "todas";
 
 // Mostra a data atual
-const hoje = new Date();
+const elementoData = document.getElementById("dataAtual");
 
-document.getElementById("dataAtual").textContent = hoje.toLocaleDateString(
-  "pt-BR",
-  {
+if (elementoData) {
+  const hoje = new Date();
+
+  elementoData.textContent = hoje.toLocaleDateString("pt-BR", {
     day: "2-digit",
     month: "long",
-    year: "numeric",
-  },
-);
+    year: "numeric"
+  });
 
-// Define a data mínima como hoje
-const ano = hoje.getFullYear();
-const mes = String(hoje.getMonth() + 1).padStart(2, "0");
-const dia = String(hoje.getDate()).padStart(2, "0");
+  // Define a data mínima como hoje
+  const ano = hoje.getFullYear();
+  const mes = String(hoje.getMonth() + 1).padStart(2, "0");
+  const dia = String(hoje.getDate()).padStart(2, "0");
 
-campoPrazo.min = `${ano}-${mes}-${dia}`;
+  if (campoPrazo) {
+    campoPrazo.min = `${ano}-${mes}-${dia}`;
+  }
+}
 
 // Salva as tarefas no navegador
 function salvarTarefas() {
   localStorage.setItem("tarefas", JSON.stringify(tarefas));
 }
 
-// Atualiza os números do painel
+// Atualiza os contadores
 function atualizarContadores() {
-  const concluidas = tarefas.filter((tarefa) => tarefa.concluida).length;
-
+  const concluidas = tarefas.filter(tarefa => tarefa.concluida).length;
   const pendentes = tarefas.length - concluidas;
 
-  totalTarefas.textContent = tarefas.length;
-  tarefasPendentes.textContent = pendentes;
-  tarefasConcluidas.textContent = concluidas;
+  if (totalTarefas) totalTarefas.textContent = tarefas.length;
+  if (tarefasPendentes) tarefasPendentes.textContent = pendentes;
+  if (tarefasConcluidas) tarefasConcluidas.textContent = concluidas;
 }
 
-// Formata a data da tarefa
+// Formata a data
 function formatarData(data) {
   const partes = data.split("-");
   return `${partes[2]}/${partes[1]}/${partes[0]}`;
 }
 
-// Cria um elemento de texto
+// Cria elementos de texto
 function criarTexto(tag, texto, classe = "") {
   const elemento = document.createElement(tag);
-
   elemento.textContent = texto;
   elemento.className = classe;
-
   return elemento;
+}
+
+// Atualiza a aparência dos filtros
+function atualizarBotoesFiltro() {
+  botoesFiltro.forEach(botao => {
+    const selecionado = botao.dataset.filtro === filtroAtual;
+
+    botao.classList.toggle("btn-dark", selecionado);
+    botao.classList.toggle("btn-outline-dark", !selecionado);
+
+    botao.setAttribute("aria-pressed", String(selecionado));
+  });
 }
 
 // Mostra as tarefas na página
 function mostrarTarefas() {
+  if (!listaTarefas || !mensagemVazia) return;
+
   listaTarefas.replaceChildren();
 
-  const tarefasFiltradas = tarefas.filter((tarefa) => {
+  const tarefasFiltradas = tarefas.filter(tarefa => {
     if (filtroAtual === "pendentes") {
       return !tarefa.concluida;
     }
@@ -84,19 +103,19 @@ function mostrarTarefas() {
     return true;
   });
 
-  mensagemVazia.classList.toggle("d-none", tarefasFiltradas.length > 0);
+  mensagemVazia.classList.toggle(
+    "d-none",
+    tarefasFiltradas.length > 0
+  );
 
   if (tarefasFiltradas.length === 0) {
-    if (tarefas.length === 0) {
-      mensagemVazia.textContent = "Você ainda não tem tarefas cadastradas.";
-    } else {
-      mensagemVazia.textContent = "Nenhuma tarefa encontrada neste filtro.";
-    }
+    mensagemVazia.textContent = tarefas.length === 0
+      ? "Você ainda não tem tarefas cadastradas."
+      : "Nenhuma tarefa encontrada neste filtro.";
   }
 
-  tarefasFiltradas.forEach((tarefa) => {
+  tarefasFiltradas.forEach(tarefa => {
     const item = document.createElement("div");
-
     item.className = "list-group-item p-3";
 
     const linha = document.createElement("div");
@@ -114,10 +133,12 @@ function mostrarTarefas() {
     checkbox.type = "checkbox";
     checkbox.className = "form-check-input mt-0";
     checkbox.checked = tarefa.concluida;
+    checkbox.setAttribute(
+      "aria-label",
+      "Marcar tarefa como concluída"
+    );
 
-    checkbox.setAttribute("aria-label", "Marcar tarefa como concluída");
-
-    checkbox.addEventListener("change", function () {
+    checkbox.addEventListener("change", () => {
       tarefa.concluida = checkbox.checked;
 
       salvarTarefas();
@@ -125,11 +146,17 @@ function mostrarTarefas() {
       mostrarTarefas();
     });
 
-    const titulo = criarTexto("h3", tarefa.descricao, "h6 mb-0");
+    const titulo = criarTexto(
+      "h3",
+      tarefa.descricao,
+      "h6 mb-0"
+    );
 
     if (tarefa.concluida) {
-      titulo.classList.add("text-decoration-line-through");
-      titulo.classList.add("text-secondary");
+      titulo.classList.add(
+        "text-decoration-line-through",
+        "text-secondary"
+      );
     }
 
     linhaTitulo.append(checkbox, titulo);
@@ -138,7 +165,7 @@ function mostrarTarefas() {
     const detalhes = criarTexto(
       "p",
       `${tarefa.materia} | Prazo: ${formatarData(tarefa.prazo)}`,
-      "small text-secondary mb-2",
+      "small text-secondary mb-2"
     );
 
     // Etiqueta de prioridade
@@ -155,7 +182,7 @@ function mostrarTarefas() {
     const etiqueta = criarTexto(
       "span",
       `Prioridade: ${tarefa.prioridade}`,
-      `badge ${classePrioridade}`,
+      `badge ${classePrioridade}`
     );
 
     conteudo.append(linhaTitulo, detalhes, etiqueta);
@@ -164,13 +191,13 @@ function mostrarTarefas() {
     const botaoExcluir = criarTexto(
       "button",
       "Excluir",
-      "btn btn-outline-danger btn-sm align-self-start",
+      "btn btn-outline-danger btn-sm align-self-start"
     );
 
     botaoExcluir.type = "button";
 
-    botaoExcluir.addEventListener("click", function () {
-      tarefas = tarefas.filter((item) => item.id !== tarefa.id);
+    botaoExcluir.addEventListener("click", () => {
+      tarefas = tarefas.filter(item => item.id !== tarefa.id);
 
       salvarTarefas();
       atualizarContadores();
@@ -184,38 +211,47 @@ function mostrarTarefas() {
 }
 
 // Adiciona uma nova tarefa
-formulario.addEventListener("submit", function (evento) {
-  evento.preventDefault();
+if (formulario) {
+  formulario.addEventListener("submit", evento => {
+    evento.preventDefault();
 
-  const novaTarefa = {
-    id: Date.now(),
-    materia: campoMateria.value,
-    descricao: campoDescricao.value.trim(),
-    prazo: campoPrazo.value,
-    prioridade: campoPrioridade.value,
-    concluida: false,
-  };
+    const novaTarefa = {
+      id: Date.now(),
+      materia: campoMateria.value,
+      descricao: campoDescricao.value.trim(),
+      prazo: campoPrazo.value,
+      prioridade: campoPrioridade.value,
+      concluida: false
+    };
 
-  if (novaTarefa.descricao === "" || novaTarefa.prazo === "") {
-    return;
-  }
+    if (
+      novaTarefa.descricao === "" ||
+      novaTarefa.prazo === "" ||
+      novaTarefa.materia === ""
+    ) {
+      return;
+    }
 
-  tarefas.push(novaTarefa);
+    tarefas.push(novaTarefa);
 
-  salvarTarefas();
-  atualizarContadores();
+    salvarTarefas();
+    atualizarContadores();
 
-  filtroAtual = "todas";
-  atualizarBotoesFiltro();
-  mostrarTarefas();
+    filtroAtual = "todas";
+    atualizarBotoesFiltro();
+    mostrarTarefas();
 
-  formulario.reset();
-  campoPrioridade.value = "Média";
-});
+    formulario.reset();
+
+    if (campoPrioridade) {
+      campoPrioridade.value = "Média";
+    }
+  });
+}
 
 // Alterna entre os filtros
-botoesFiltro.forEach((botao) => {
-  botao.addEventListener("click", function () {
+botoesFiltro.forEach(botao => {
+  botao.addEventListener("click", () => {
     filtroAtual = botao.dataset.filtro;
 
     atualizarBotoesFiltro();
@@ -223,150 +259,266 @@ botoesFiltro.forEach((botao) => {
   });
 });
 
-// Destaca o filtro selecionado
+// Inicializa a lista de tarefas
+atualizarContadores();
+atualizarBotoesFiltro();
+mostrarTarefas();
 
-function atualizarBotoesFiltro() {
-  botoesFiltro.forEach((botao) => {
-    const selecionado = botao.dataset.filtro === filtroAtual;
+// ==========================================
+// CRONÔMETRO DE ESTUDOS
+// ==========================================
 
-    botao.classList.toggle("btn-primary", false);
-    botao.classList.toggle("btn-outline-primary", false);
+const tempoCronometro = document.getElementById("tempoCronometro");
+const modoCronometro = document.getElementById("modoCronometro");
 
-    botao.classList.toggle("btn-dark", selecionado);
-    botao.classList.toggle("btn-outline-dark", !selecionado);
+const iniciarCronometro = document.getElementById("iniciarCronometro");
+const pausarCronometro = document.getElementById("pausarCronometro");
+const reiniciarCronometro = document.getElementById("reiniciarCronometro");
 
-    botao.setAttribute("aria-pressed", String(selecionado));
-  });
+const modoPausa = document.getElementById("modoPausa");
+const voltarEstudo = document.getElementById("voltarEstudo");
+
+let tempoInicial = 25 * 60;
+let tempoRestante = tempoInicial;
+let intervaloCronometro = null;
+
+// Atualiza o visor do cronômetro
+function atualizarCronometro() {
+  if (!tempoCronometro) return;
+
+  const minutos = Math.floor(tempoRestante / 60);
+  const segundos = tempoRestante % 60;
+
+  tempoCronometro.textContent =
+    String(minutos).padStart(2, "0") +
+    ":" +
+    String(segundos).padStart(2, "0");
 }
 
+// Inicia a contagem
+function iniciarContagem() {
+  if (intervaloCronometro !== null || tempoRestante <= 0) {
+    return;
+  }
+
+  intervaloCronometro = setInterval(() => {
+    tempoRestante--;
+
+    atualizarCronometro();
+
+    if (tempoRestante <= 0) {
+      clearInterval(intervaloCronometro);
+      intervaloCronometro = null;
+
+      alert("Tempo encerrado!");
+    }
+  }, 1000);
+}
+
+// Pausa a contagem
+function pausarContagem() {
+  clearInterval(intervaloCronometro);
+  intervaloCronometro = null;
+}
+
+// Reinicia o tempo selecionado
+function reiniciarContagem() {
+  pausarContagem();
+
+  tempoRestante = tempoInicial;
+  atualizarCronometro();
+}
+
+// Seleciona 25 minutos de estudo
+function selecionarEstudo() {
+  pausarContagem();
+
+  tempoInicial = 25 * 60;
+  tempoRestante = tempoInicial;
+
+  if (modoCronometro) {
+    modoCronometro.textContent = "Tempo de estudo";
+  }
+
+  atualizarCronometro();
+}
+
+// Seleciona 5 minutos de pausa
+function selecionarPausa() {
+  pausarContagem();
+
+  tempoInicial = 5 * 60;
+  tempoRestante = tempoInicial;
+
+  if (modoCronometro) {
+    modoCronometro.textContent = "Tempo de pausa";
+  }
+
+  atualizarCronometro();
+}
+
+// Eventos dos botões
+if (iniciarCronometro) {
+  iniciarCronometro.addEventListener("click", iniciarContagem);
+}
+
+if (pausarCronometro) {
+  pausarCronometro.addEventListener("click", pausarContagem);
+}
+
+if (reiniciarCronometro) {
+  reiniciarCronometro.addEventListener("click", reiniciarContagem);
+}
+
+if (modoPausa) {
+  modoPausa.addEventListener("click", selecionarPausa);
+}
+
+if (voltarEstudo) {
+  voltarEstudo.addEventListener("click", selecionarEstudo);
+}
+
+// Exibe o tempo inicial
+atualizarCronometro();
+// ==========================================
+// MINHAS ANOTAÇÕES
+// ==========================================
 const formAnotacao = document.getElementById("formAnotacao");
 const tituloAnotacao = document.getElementById("tituloAnotacao");
 const textoAnotacao = document.getElementById("textoAnotacao");
 const listaAnotacoes = document.getElementById("listaAnotacoes");
 const mensagemAnotacoes = document.getElementById("mensagemAnotacoes");
 
-// Carrega as anotações salvas
+// Recupera as anotações salvas
 let anotacoes = JSON.parse(localStorage.getItem("minhasAnotacoes")) || [];
 
-// Salva a lista completa no navegador
+// Salva as anotações no navegador
 function salvarAnotacoes() {
-  localStorage.setItem("minhasAnotacoes", JSON.stringify(anotacoes));
+    localStorage.setItem("minhasAnotacoes", JSON.stringify(anotacoes));
 }
 
-// Mostra todas as anotações
+// Mostra as anotações na página
 function mostrarAnotacoes() {
-  listaAnotacoes.replaceChildren();
+    if (!listaAnotacoes || !mensagemAnotacoes) return;
 
-  mensagemAnotacoes.classList.toggle("d-none", anotacoes.length > 0);
+    listaAnotacoes.replaceChildren();
 
-  anotacoes.forEach(function (anotacao) {
-    const coluna = document.createElement("div");
-    coluna.className = "col-12 col-md-6 col-lg-4";
+    mensagemAnotacoes.classList.toggle(
+        "d-none",
+        anotacoes.length > 0
+    );
 
-    const cartao = document.createElement("div");
-    cartao.className = "card h-100 border-0 shadow-sm";
-    cartao.style.backgroundColor = "#F5F0D5";
+    anotacoes.forEach(anotacao => {
+        const coluna = document.createElement("div");
+        coluna.className = "col-md-6 col-lg-4";
 
-    const corpo = document.createElement("div");
-    corpo.className = "card-body d-flex flex-column";
+        const cartao = document.createElement("div");
+        cartao.className = "card h-100 border-0 shadow-sm";
+        cartao.style.backgroundColor = "#F5F0D5";
 
-    const titulo = document.createElement("h3");
-    titulo.className = "h6";
-    titulo.textContent = anotacao.titulo;
-    titulo.style.color = "#172554";
+        const corpo = document.createElement("div");
+        corpo.className = "card-body";
 
-    const texto = document.createElement("p");
-    texto.className = "mb-3";
-    texto.style.whiteSpace = "pre-wrap";
-    texto.textContent = anotacao.texto;
+        const titulo = document.createElement("h5");
+        titulo.className = "card-title fw-bold";
+        titulo.style.color = "#172554";
+        titulo.textContent = anotacao.titulo;
 
-    const data = document.createElement("small");
-    data.className = "text-secondary mb-3";
-    data.textContent = anotacao.data;
+        const texto = document.createElement("p");
+        texto.className = "card-text";
+        texto.textContent = anotacao.texto;
 
-    const botoes = document.createElement("div");
-    botoes.className = "d-flex gap-2 mt-auto";
+        const data = document.createElement("small");
+        data.className = "text-secondary d-block mb-3";
+        data.textContent = anotacao.data;
 
-    const botaoEditar = document.createElement("button");
-    botaoEditar.type = "button";
-    botaoEditar.className = "btn btn-sm btn-outline-dark";
-    botaoEditar.textContent = "Editar";
+        const botoes = document.createElement("div");
+        botoes.className = "d-flex gap-2";
 
-    botaoEditar.addEventListener("click", function () {
-      const novoTitulo = prompt("Edite o título:", anotacao.titulo);
+        // Botão editar
+        const botaoEditar = document.createElement("button");
+        botaoEditar.type = "button";
+        botaoEditar.className = "btn btn-sm btn-outline-primary";
+        botaoEditar.textContent = "Editar";
 
-      if (novoTitulo === null) return;
+        botaoEditar.addEventListener("click", () => {
+            const novoTitulo = prompt(
+                "Digite o novo título:",
+                anotacao.titulo
+            );
 
-      const novoTexto = prompt("Edite o conteúdo:", anotacao.texto);
+            if (novoTitulo === null) return;
 
-      if (novoTexto === null) return;
+            const novoTexto = prompt(
+                "Digite o novo texto:",
+                anotacao.texto
+            );
 
-      if (novoTitulo.trim() === "" || novoTexto.trim() === "") {
-        alert("O título e o conteúdo não podem ficar vazios.");
-        return;
-      }
+            if (novoTexto === null) return;
 
-      anotacao.titulo = novoTitulo.trim();
-      anotacao.texto = novoTexto.trim();
+            if (novoTitulo.trim() === "" || novoTexto.trim() === "") {
+                alert("Preencha o título e o texto.");
+                return;
+            }
 
-      salvarAnotacoes();
-      mostrarAnotacoes();
+            anotacao.titulo = novoTitulo.trim();
+            anotacao.texto = novoTexto.trim();
+
+            salvarAnotacoes();
+            mostrarAnotacoes();
+        });
+
+        // Botão excluir
+        const botaoExcluir = document.createElement("button");
+        botaoExcluir.type = "button";
+        botaoExcluir.className = "btn btn-sm btn-outline-danger";
+        botaoExcluir.textContent = "Excluir";
+
+        botaoExcluir.addEventListener("click", () => {
+            anotacoes = anotacoes.filter(
+                item => item.id !== anotacao.id
+            );
+
+            salvarAnotacoes();
+            mostrarAnotacoes();
+        });
+
+        botoes.append(botaoEditar, botaoExcluir);
+        corpo.append(titulo, texto, data, botoes);
+        cartao.appendChild(corpo);
+        coluna.appendChild(cartao);
+
+        listaAnotacoes.appendChild(coluna);
     });
-
-    const botaoExcluir = document.createElement("button");
-    botaoExcluir.type = "button";
-    botaoExcluir.className = "btn btn-sm btn-outline-danger";
-    botaoExcluir.textContent = "Excluir";
-
-    botaoExcluir.addEventListener("click", function () {
-      const confirmar = confirm("Deseja excluir esta anotação?");
-
-      if (!confirmar) return;
-
-      anotacoes = anotacoes.filter(function (item) {
-        return item.id !== anotacao.id;
-      });
-
-      salvarAnotacoes();
-      mostrarAnotacoes();
-    });
-
-    botoes.append(botaoEditar, botaoExcluir);
-    corpo.append(titulo, texto, data, botoes);
-    cartao.appendChild(corpo);
-    coluna.appendChild(cartao);
-
-    listaAnotacoes.appendChild(coluna);
-  });
 }
 
-// Cria uma nova anotação sem apagar as anteriores
-formAnotacao.addEventListener("submit", function (evento) {
-  evento.preventDefault();
+// Adiciona uma nova anotação
+if (formAnotacao) {
+    formAnotacao.addEventListener("submit", evento => {
+        evento.preventDefault();
 
-  const novaAnotacao = {
-    id: Date.now(),
-    titulo: tituloAnotacao.value.trim(),
-    texto: textoAnotacao.value.trim(),
-    data: new Date().toLocaleDateString("pt-BR"),
-  };
+        const titulo = tituloAnotacao.value.trim();
+        const texto = textoAnotacao.value.trim();
 
-  if (novaAnotacao.titulo === "" || novaAnotacao.texto === "") {
-    return;
-  }
+        if (titulo === "" || texto === "") {
+            return;
+        }
 
-  anotacoes.push(novaAnotacao);
+        const novaAnotacao = {
+            id: Date.now(),
+            titulo: titulo,
+            texto: texto,
+            data: new Date().toLocaleDateString("pt-BR")
+        };
 
-  salvarAnotacoes();
-  mostrarAnotacoes();
+        anotacoes.push(novaAnotacao);
 
-  formAnotacao.reset();
-});
+        salvarAnotacoes();
+        mostrarAnotacoes();
 
-// Exibe as anotações que já estavam salvas
+        formAnotacao.reset();
+    });
+}
+
+// Carrega as anotações ao abrir a página
 mostrarAnotacoes();
-
-// Inicia o organizador com as tarefas salvas
-atualizarContadores();
-atualizarBotoesFiltro();
-mostrarTarefas();
