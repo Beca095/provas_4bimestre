@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="pt-br">
   <head>
@@ -7,19 +6,13 @@
 
     <title>Organizador de Estudos</title>
 
-    <!-- Bootstrap -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
-
-    <!-- JavaScript -->
-    <script src="script.js" defer></script>
   </head>
 
   <body style="background-color: #f4f6fa">
-
-    <!-- Cabeçalho -->
     <header class="text-white py-5" style="background-color: #172554">
       <div class="container">
         <p
@@ -36,13 +29,11 @@
       </div>
     </header>
 
-    <!-- Barra de navegação -->
     <nav
       class="navbar navbar-expand-lg navbar-dark"
       style="background-color: #233766"
     >
       <div class="container">
-
         <a class="navbar-brand fw-bold" href="index.html">
           Organizador de Estudos
         </a>
@@ -61,21 +52,17 @@
 
         <div class="collapse navbar-collapse" id="menuNavegacao">
           <ul class="navbar-nav ms-auto">
-
             <li class="nav-item">
-              <a
-                class="nav-link active"
-                href="index.html"
-                aria-current="page"
-              >
+              <a class="nav-link active" href="index.html" aria-current="page">
                 Início
               </a>
             </li>
 
             <li class="nav-item">
-              <a class="nav-link" href="notas.html">
-                Minhas notas
-              </a>
+              <a class="nav-link" href="notas.html"> Minhas notas </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="relatorio.html"> Desempenho </a>
             </li>
           </ul>
         </div>
@@ -83,10 +70,7 @@
     </nav>
 
     <main class="container py-4">
-
-      <!-- Painel de estudos -->
       <section class="mb-4">
-
         <h2 class="h4">Meu painel de estudos</h2>
 
         <p class="text-secondary mb-0">
@@ -97,12 +81,9 @@
           <strong>Hoje:</strong>
           <span id="dataAtual"></span>
         </p>
-
       </section>
 
-      <!-- Resumo das tarefas -->
       <section class="row g-3 mb-4">
-
         <div class="col-12 col-md-4">
           <div
             class="card border-0 shadow-sm h-100"
@@ -110,9 +91,7 @@
           >
             <div class="card-body">
               <p class="text-secondary mb-1">Total de tarefas</p>
-              <h3 id="totalTarefas" class="mb-0" style="color: #172554">
-                0
-              </h3>
+              <h3 id="totalTarefas" class="mb-0" style="color: #172554">0</h3>
             </div>
           </div>
         </div>
@@ -124,9 +103,7 @@
           >
             <div class="card-body">
               <p class="text-secondary mb-1">Pendentes</p>
-              <h3 id="tarefasPendentes" class="text-warning mb-0">
-                0
-              </h3>
+              <h3 id="tarefasPendentes" class="text-warning mb-0">0</h3>
             </div>
           </div>
         </div>
@@ -138,29 +115,20 @@
           >
             <div class="card-body">
               <p class="text-secondary mb-1">Concluídas</p>
-              <h3 id="tarefasConcluidas" class="text-success mb-0">
-                0
-              </h3>
+              <h3 id="tarefasConcluidas" class="text-success mb-0">0</h3>
             </div>
           </div>
         </div>
-
       </section>
 
-      <!-- Adicionar tarefa -->
       <section class="card border-0 shadow-sm mb-4">
         <div class="card-body p-4">
-
           <h2 class="h5 mb-3">Adicionar nova tarefa</h2>
 
           <form id="formTarefa">
-
             <div class="row g-3">
-
               <div class="col-12 col-md-6">
-                <label for="materia" class="form-label">
-                  Matéria
-                </label>
+                <label for="materia" class="form-label"> Matéria </label>
 
                 <select id="materia" class="form-select" required>
                   <option value="">Selecione uma matéria</option>
@@ -186,6 +154,46 @@
                 </select>
               </div>
 
+              <div class="col-12">
+                <button
+                  class="btn btn-outline-dark btn-sm"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#painelMaterias"
+                  aria-expanded="false"
+                  aria-controls="painelMaterias"
+                >
+                  Gerenciar matérias
+                </button>
+
+                <div class="collapse mt-3" id="painelMaterias">
+                  <div class="border rounded p-3">
+                    <label for="novaMateria" class="form-label">
+                      Adicionar matéria
+                    </label>
+
+                    <div class="input-group mb-3">
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="novaMateria"
+                        placeholder="Nome da matéria"
+                      />
+
+                      <button
+                        type="button"
+                        class="btn btn-primary"
+                        id="adicionarMateria"
+                      >
+                        Adicionar
+                      </button>
+                    </div>
+
+                    <div id="listaMaterias" class="list-group"></div>
+                  </div>
+                </div>
+              </div>
+
               <div class="col-12 col-md-6">
                 <label for="descricao" class="form-label">
                   Nome da atividade
@@ -202,22 +210,13 @@
               </div>
 
               <div class="col-12 col-md-6">
-                <label for="prazo" class="form-label">
-                  Prazo
-                </label>
+                <label for="prazo" class="form-label"> Prazo </label>
 
-                <input
-                  type="date"
-                  id="prazo"
-                  class="form-control"
-                  required
-                />
+                <input type="date" id="prazo" class="form-control" required />
               </div>
 
               <div class="col-12 col-md-6">
-                <label for="prioridade" class="form-label">
-                  Prioridade
-                </label>
+                <label for="prioridade" class="form-label"> Prioridade </label>
 
                 <select id="prioridade" class="form-select" required>
                   <option value="Baixa">Baixa</option>
@@ -235,25 +234,19 @@
                   + Adicionar tarefa
                 </button>
               </div>
-
             </div>
           </form>
-
         </div>
       </section>
 
-      <!-- Lista de tarefas -->
       <section class="card border-0 shadow-sm mb-4">
         <div class="card-body p-4">
-
           <div
             class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-3"
           >
-
             <h2 class="h5 mb-0">Minhas tarefas</h2>
 
             <div class="d-flex flex-wrap gap-2">
-
               <button
                 type="button"
                 class="btn btn-primary btn-sm filtro"
@@ -280,30 +273,22 @@
               >
                 Concluídas
               </button>
-
             </div>
           </div>
 
           <div id="listaTarefas" class="list-group"></div>
 
-          <p
-            id="mensagemVazia"
-            class="text-secondary text-center py-4 mb-0"
-          >
+          <p id="mensagemVazia" class="text-secondary text-center py-4 mb-0">
             Você ainda não tem tarefas cadastradas.
           </p>
-
         </div>
       </section>
 
-      <!-- Área de anotações -->
       <section class="card border-0 shadow-sm mb-4">
         <div class="card-body p-4">
-
           <div
             class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3"
           >
-
             <div>
               <h2 class="h5 mb-1">Minhas anotações</h2>
 
@@ -311,15 +296,9 @@
                 Guarde ideias, lembretes e resumos importantes.
               </p>
             </div>
-
-            <span class="badge rounded-pill text-bg-light">
-              Meu espaço de ideias
-            </span>
-
           </div>
 
           <form id="formAnotacao" class="mb-4">
-
             <div class="mb-3">
               <label for="tituloAnotacao" class="form-label">
                 Título da anotação
@@ -357,7 +336,6 @@
             >
               + Nova anotação
             </button>
-
           </form>
 
           <hr />
@@ -372,23 +350,18 @@
           >
             Você ainda não tem anotações.
           </p>
-
         </div>
       </section>
-<!-- Cronômetro de estudos -->
+
       <section class="card border-0 shadow-sm mb-4">
         <div class="card-body p-4 text-center">
-
           <h2 class="h5 mb-2">Cronômetro de estudos</h2>
 
           <p class="text-secondary mb-4">
             Concentre-se nos estudos e aproveite suas pausas.
           </p>
 
-          <span
-            id="modoCronometro"
-            class="badge rounded-pill text-bg-light"
-          >
+          <span id="modoCronometro" class="badge rounded-pill text-bg-light">
             Tempo de estudo
           </span>
 
@@ -401,7 +374,6 @@
           </h2>
 
           <div class="d-flex justify-content-center flex-wrap gap-2">
-
             <button
               type="button"
               id="iniciarCronometro"
@@ -426,11 +398,9 @@
             >
               Reiniciar
             </button>
-
           </div>
 
           <div class="d-flex justify-content-center flex-wrap gap-2 mt-4">
-
             <button
               type="button"
               id="modoPausa"
@@ -446,28 +416,19 @@
             >
               Voltar para 25 minutos
             </button>
-
           </div>
-
         </div>
       </section>
-
     </main>
 
-    <!-- Rodapé -->
     <footer class="bg-white border-top py-3 mt-4">
       <div class="container text-center">
-        <p class="text-secondary small mb-0">
-          Organizador de Estudos
-        </p>
+        <p class="text-secondary small mb-0">Organizador de Estudos</p>
       </div>
     </footer>
 
-    <!-- Bootstrap JavaScript -->
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-    ></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/materias.js" defer></script>
+    <script src="js/script.js" defer></script>
   </body>
 </html>
-

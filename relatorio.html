@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Relatório de Desempenho</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+
+  <body>
+    <header class="text-white py-5" style="background-color: #172554">
+      <div class="container">
+        <p
+          class="text-uppercase small mb-2"
+          style="color: #b8c7e0; letter-spacing: 3px"
+        >
+          ORGANIZE • PLANEJE • CONQUISTE
+        </p>
+        <h1 class="h2 fw-bold mb-2">Desempenho Escolar</h1>
+
+        <p class="mb-0" style="color: #e0e7f2">
+          Acompanhe seu desempenho escolar.
+        </p>
+      </div>
+    </header>
+
+    <nav
+      class="navbar navbar-expand-lg navbar-dark"
+      style="background-color: #233766"
+    >
+      <div class="container">
+        <a class="navbar-brand fw-bold" href="index.html">
+          Organizador de Estudos
+        </a>
+
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#menuNavegacao"
+          aria-controls="menuNavegacao"
+          aria-expanded="false"
+          aria-label="Abrir menu"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="menuNavegacao">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">Início</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="notas.html">Minhas notas</a>
+            </li>
+
+            <li class="nav-item">
+              <a
+                class="nav-link active"
+                href="relatorio.html"
+                aria-current="page"
+              >
+                Desempenho
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main class="container py-4">
+      <section class="mb-4">
+        <h2 class="h4">Relatório de desempenho</h2>
+
+        <p class="text-secondary mb-0">
+          Acompanhe suas notas, tarefas e evolução nos estudos.
+        </p>
+      </section>
+
+      <!-- Indicadores gerais -->
+      <section class="row g-3 mb-4">
+        <div class="col-12 col-md-6 col-lg-3">
+          <div
+            class="card border-0 shadow-sm h-100"
+            style="border-top: 4px solid #172554 !important"
+          >
+            <div class="card-body">
+              <p class="text-secondary mb-1">Média geral</p>
+              <h3 id="mediaGeral" class="mb-0" style="color: #172554">0,0</h3>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-3">
+          <div
+            class="card border-0 shadow-sm h-100"
+            style="border-top: 4px solid #172554 !important"
+          >
+            <div class="card-body">
+              <p class="text-secondary mb-1">Notas cadastradas</p>
+              <h3 id="totalNotas" class="mb-0" style="color: #172554">0</h3>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-3">
+          <div
+            class="card border-0 shadow-sm h-100"
+            style="border-top: 4px solid #172554 !important"
+          >
+            <div class="card-body">
+              <p class="text-secondary mb-1">Matérias avaliadas</p>
+              <h3 id="totalMaterias" class="mb-0" style="color: #172554">0</h3>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-3">
+          <div
+            class="card border-0 shadow-sm h-100"
+            style="border-top: 4px solid #172554 !important"
+          >
+            <div class="card-body">
+              <p class="text-secondary mb-1">Tarefas concluídas</p>
+              <h3 id="totalConcluidas" class="text-success mb-0">0</h3>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Gráfico por matéria -->
+      <section class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-4">
+          <h2 class="h5 mb-3">Desempenho por matéria</h2>
+
+          <p class="text-secondary small">
+            Veja a média das notas cadastradas em cada matéria.
+          </p>
+
+          <div id="mensagemMaterias" class="text-secondary text-center py-4">
+            Ainda não existem notas cadastradas.
+          </div>
+
+          <div id="areaGraficoMaterias" style="display: none">
+            <canvas id="graficoMaterias"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- Gráfico por bimestre -->
+      <section class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-4">
+          <h2 class="h5 mb-3">Evolução por bimestre</h2>
+
+          <p class="text-secondary small">
+            Acompanhe a evolução das suas médias ao longo do ano.
+          </p>
+
+          <div id="mensagemBimestres" class="text-secondary text-center py-4">
+            Ainda não existem notas cadastradas.
+          </div>
+
+          <div id="areaGraficoBimestres" style="display: none">
+            <canvas id="graficoBimestres"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- Gráfico de tarefas -->
+      <section class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-4">
+          <h2 class="h5 mb-3">Organização das tarefas</h2>
+
+          <p class="text-secondary small">
+            Confira a quantidade de tarefas concluídas e pendentes.
+          </p>
+
+          <div id="mensagemTarefas" class="text-secondary text-center py-4">
+            Ainda não existem tarefas cadastradas.
+          </div>
+
+          <div
+            id="areaGraficoTarefas"
+            class="mx-auto"
+            style="display: none; max-width: 400px"
+          >
+            <canvas id="graficoTarefas"></canvas>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="bg-white border-top py-3 mt-4">
+      <div class="container text-center">
+        <p class="text-secondary small mb-0">Organizador de Estudos</p>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+
+    <script src="js/relatorio.js" defer></script>
+  </body>
+</html>
